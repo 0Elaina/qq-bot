@@ -2,7 +2,6 @@
 name = "qq-bot"
 version = "0.1.0"
 description = "Offline QQ LangGraph calculator agent"
-readme = "README.md"
 authors = [
     { name = "nepgear", email = "471198414@qq.com" }
 ]

@@ -17,11 +17,24 @@
 
 ## 启动方式
 
-当前处于纯文档阶段，尚未进入工程实现，因此没有启动命令、端口或可运行服务。
+离线模拟运行命令：
+```powershell
+.venv\Scripts\qq-bot
+# 或
+.venv\Scripts\python -c "import qq_bot; qq_bot.main()"
+```
+运行时会自动创建并维护 `data/agent_state.db`，保存 LangGraph 短期会话 checkpoint。
 
 ## 当前状态
 
-阶段 0 的文档基线已建立：MVP 范围、QQ 接入方向、Session 隔离规则和 LangGraph 主工作流已确定。下一阶段才实现离线 LangGraph 核心，并先通过模拟消息验收，再接入 NapCat。
+- [已完成] 离线 LangGraph 计算器 Agent 核心构建完成并通过全部用例验收：
+  - 统一了 LangGraph State 的 `messages` 列表字段，确保 `add_messages` 正确增量归约与 ToolNode 开箱兼容；
+  - 实现了基于 AST 白名单的安全四则运算 Tool Calling；
+  - 实现了回复策略过滤器（私聊必回、未 @ 群聊静默忽略、@ 群聊回复）；
+  - 实现了基于 `thread_id` 的会话隔离（私聊按用户隔离、群聊按群+用户隔离）；
+  - 实现了基于 `AsyncSqliteSaver` 的异步 Checkpointer 生命周期托管；
+  - 实现了 `qq-bot` 离线多场景模拟入口。
+- [下一步] 接入真实大模型 API 或接入 NapCat / OneBot 11 协议适配器。
 
 ## 我的薄弱模块
 
