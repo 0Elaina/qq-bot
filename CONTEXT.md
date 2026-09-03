@@ -13,7 +13,7 @@
 - 持久化：SQLite。
 - 模型：支持 Tool Calling 的低成本 OpenAI 兼容云 API。
 
-上述技术仅为已确认的设计选择，当前尚未安装依赖、创建工程代码、配置模型密钥或接入 QQ。
+上述技术栈已全部在工程代码中落地实现，并完成真实网络端到端验收。
 
 ## 启动方式
 
@@ -35,8 +35,10 @@ NapCat 反向 WebSocket 连接地址：`ws://127.0.0.1:8080/onebot/v11/ws`。
 
 ## 当前状态
 
-- [已完成] 接入 NapCat / OneBot 11 反向 WebSocket 协议适配层与 FastAPI 网关服务（`qq-bot-server`），实现非阻塞后台并发派发与生命周期优雅停机，服务验收通过。
-- [下一步] 本地运行 NapCat 联调，或补齐 DESIGN.md 规划的本地笔记查询 Tool。
+- [已完成] 离线 LangGraph 核心架构、AST 安全计算器与 5 大用例验收。
+- [已完成] 接入真实 OpenAI 兼容大模型 API（DeepSeek-V4-Flash），实现自主 Tool Calling、多轮持久化记忆与用户会话隔离。
+- [已完成] 接入 NapCat / OneBot 11 反向 WebSocket 协议适配层与 FastAPI 网关服务（`qq-bot-server`），全链路真机联调验收通过。
+- [进行中] 项目收尾与 GitHub 开源归档（废弃代码清理、.env.example 模板与 README.md 文档撰写、推送到 GitHub 远程仓库）。
 
 ## 我的薄弱模块
 
