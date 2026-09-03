@@ -10,3 +10,7 @@ wheels/
 .venv
 
 .env
+
+# 本地 SQLite 数据库文件
+data/
+*.db
