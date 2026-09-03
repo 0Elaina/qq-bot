@@ -27,14 +27,8 @@
 
 ## 当前状态
 
-- [已完成] 离线 LangGraph 计算器 Agent 核心构建完成并通过全部用例验收：
-  - 统一了 LangGraph State 的 `messages` 列表字段，确保 `add_messages` 正确增量归约与 ToolNode 开箱兼容；
-  - 实现了基于 AST 白名单的安全四则运算 Tool Calling；
-  - 实现了回复策略过滤器（私聊必回、未 @ 群聊静默忽略、@ 群聊回复）；
-  - 实现了基于 `thread_id` 的会话隔离（私聊按用户隔离、群聊按群+用户隔离）；
-  - 实现了基于 `AsyncSqliteSaver` 的异步 Checkpointer 生命周期托管；
-  - 实现了 `qq-bot` 离线多场景模拟入口。
-- [下一步] 接入真实大模型 API 或接入 NapCat / OneBot 11 协议适配器。
+- [已完成] 接入真实 OpenAI 兼容大模型 API（DeepSeek-V4-Flash），成功实现自主 Tool Calling、多轮对话持久化与用户会话隔离，通过 6 大核心场景验收。
+- [下一步] 接入 NapCat / OneBot 11 反向 WebSocket 协议适配层（攻坚异步网络事件循环与真实 QQ 消息收发）。
 
 ## 我的薄弱模块
 
