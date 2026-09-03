@@ -37,17 +37,17 @@
 ```mermaid
 sequenceDiagram
     autonumber
-    actor User as 手机 / 电脑 QQ 用户
-    participant NapCat as NapCat (NTQQ 核心)
-    participant Server as FastAPI 网关 (/onebot/v11/ws)
-    participant Adapter as OneBot 适配层 (onebot.py)
-    participant Agent as LangGraph Agent (DeepSeek)
-    participant Tool as 安全 AST 计算器 Tool
+    actor User as "QQ 用户"
+    participant NapCat as "NapCat (NTQQ 核心)"
+    participant Server as "FastAPI 网关"
+    participant Adapter as "OneBot 适配层"
+    participant Agent as "LangGraph Agent"
+    participant Tool as "安全 AST 计算器"
 
     User->>NapCat: 发送消息（私聊或群聊 @）
     NapCat->>Server: 反向 WebSocket 推送事件 JSON
     Server->>Adapter: 校验 post_type，剔除 @ 标签，构建 IncomingMessage
-    Server->>Server: asyncio.create_task 后台独立并发派发（WS 接收零等待）
+    Server->>Server: asyncio.create_task 后台并发派发
     Server->>Agent: ainvoke 注入会话历史
     alt 需要数学运算
         Agent-->>Server: 发起 Tool Calling 工单
@@ -56,7 +56,7 @@ sequenceDiagram
         Agent-->>Server: 组织最终自然语言解答
     end
     Server->>NapCat: 异步 HTTP POST /send_private_msg 或 /send_group_msg
-    NapCat-->>User: 瞬间推送机器人回复到 QQ 聊天窗口
+    NapCat-->>User: 推送机器人回复到 QQ 聊天窗口
 ```
 
 ---
