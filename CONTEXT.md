@@ -38,7 +38,9 @@ NapCat 反向 WebSocket 连接地址：`ws://127.0.0.1:8080/onebot/v11/ws`。
 - [已完成] 离线 LangGraph 核心架构、AST 安全计算器与 5 大用例验收。
 - [已完成] 接入真实 OpenAI 兼容大模型 API（DeepSeek-V4-Flash），实现自主 Tool Calling、多轮持久化记忆与用户会话隔离。
 - [已完成] 接入 NapCat / OneBot 11 反向 WebSocket 协议适配层与 FastAPI 网关服务（`qq-bot-server`），全链路真机联调验收通过。
-- [进行中] 项目收尾与 GitHub 开源归档（废弃代码清理、.env.example 模板与 README.md 文档撰写、推送到 GitHub 远程仓库）。
+- [已完成] 项目收尾、废弃代码清理、.env.example 模板与 README.md 撰写，已成功推送到 GitHub 远程仓库。
+- [已完成] 傲娇猫娘个性化人设定制：独立提示词管理（`prompts/persona.md`）与 `model_node` 动态无状态注入，真机联调验收通过。
+- [下一步] 扩展新能力：基于本地笔记（`notes`）只读查询 Tool 的设计与接入。
 
 ## 我的薄弱模块
 

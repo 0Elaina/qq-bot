@@ -59,3 +59,10 @@ flowchart LR
 | LangGraph checkpointer | 由 `AsyncSqliteSaver` 管理的 SQLite 内部表 | 按 `thread_id` 保存图状态和短期消息；业务代码不直接依赖其表结构。 |
 
 MVP 工具固定为：安全的四则运算计算器，以及按关键词查询 `notes` 的本地笔记工具。网页搜索不进入第一版，以避免新增第三方 API、网络失败和成本变量。
+
+## 提示词与人设架构
+
+| 模块 | 载体路径 | 职责与机制 |
+|------|----------|------------|
+| 人设定义 | `prompts/persona.md` | 独立 Markdown 文件，定义傲娇猫娘身份、口癖（“喵”/颜文字）与泛化工具调用契约（嘴嫌体正直）。 |
+| 动态注入 | `src/qq_bot/graph/model.py` (`model_node`) | 内存中临时组装 `[SystemMessage, *state["messages"]]` 发送给模型，不污染 SQLite 会话持久化历史。带 `@lru_cache` 本地缓存。 |
