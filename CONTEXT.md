@@ -23,12 +23,20 @@
 # 或
 .venv\Scripts\python -c "import qq_bot; qq_bot.main()"
 ```
+
+NapCat 实时网关服务运行命令：
+```powershell
+uv run qq-bot-server
+# 或
+.venv\Scripts\python -m qq_bot.server
+```
+NapCat 反向 WebSocket 连接地址：`ws://127.0.0.1:8080/onebot/v11/ws`。
 运行时会自动创建并维护 `data/agent_state.db`，保存 LangGraph 短期会话 checkpoint。
 
 ## 当前状态
 
-- [已完成] 接入真实 OpenAI 兼容大模型 API（DeepSeek-V4-Flash），成功实现自主 Tool Calling、多轮对话持久化与用户会话隔离，通过 6 大核心场景验收。
-- [下一步] 接入 NapCat / OneBot 11 反向 WebSocket 协议适配层（攻坚异步网络事件循环与真实 QQ 消息收发）。
+- [已完成] 接入 NapCat / OneBot 11 反向 WebSocket 协议适配层与 FastAPI 网关服务（`qq-bot-server`），实现非阻塞后台并发派发与生命周期优雅停机，服务验收通过。
+- [下一步] 本地运行 NapCat 联调，或补齐 DESIGN.md 规划的本地笔记查询 Tool。
 
 ## 我的薄弱模块
 

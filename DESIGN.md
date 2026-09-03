@@ -45,9 +45,9 @@ flowchart LR
 
 | 方向 | 方法 / 路径 | 用途 | 状态 |
 |------|-------------|------|------|
-| 入站 | WebSocket `/onebot/v11/ws` | NapCat 以反向 WebSocket 向应用推送 OneBot 消息事件。 | 设计已定，未实现。 |
-| 出站 | `POST {NAPCAT_API_BASE}/send_private_msg` | 发送 QQ 私聊文本。 | 设计已定，未联调。 |
-| 出站 | `POST {NAPCAT_API_BASE}/send_group_msg` | 发送 QQ 群聊文本。 | 设计已定，未联调。 |
+| 入站 | WebSocket `/onebot/v11/ws` | NapCat 以反向 WebSocket 向应用推送 OneBot 消息事件。 | 已实现 (FastAPI)。 |
+| 出站 | `POST {NAPCAT_API_BASE}/send_private_msg` | 发送 QQ 私聊文本。 | 已实现 (httpx)。 |
+| 出站 | `POST {NAPCAT_API_BASE}/send_group_msg` | 发送 QQ 群聊文本。 | 已实现 (httpx)。 |
 
 入站只处理 OneBot 的 `private` 与 `group` 文本消息；适配层提取 `message_id`、`user_id`、`group_id`、文本内容和是否 @ 机器人。机器人自身消息及其他事件类型直接忽略。
 
