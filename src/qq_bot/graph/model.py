@@ -6,11 +6,13 @@ from langchain_openai import ChatOpenAI
 
 from qq_bot.config import config
 from qq_bot.graph.state import AgentState
-from qq_bot.tools.calculator import calculate
+from qq_bot.tools.anime import recommend_anime
+from qq_bot.tools.calculator import execute_python
+from qq_bot.tools.time import get_current_time
 
 
 def get_model_with_tools():
-    """初始化 OpenAI 兼容大模型客户端，并绑定计算器工具 Schema"""
+    """初始化 OpenAI 兼容大模型客户端，并绑定可用工具 Schema"""
     # 实例化客户端，通过 config 传入 Base URL 与 API Key
     model = ChatOpenAI(
         api_key=config.openai_api_key,
@@ -19,7 +21,8 @@ def get_model_with_tools():
         temperature=0.7,
     )
     # bind_tools 将 Python 函数签名与 docstring 转换为 API 认识的工具规范
-    return model.bind_tools([calculate])
+    return model.bind_tools([execute_python, recommend_anime, get_current_time])
+
 
 
 async def model_node(state: AgentState) -> dict[str, list[AIMessage]]:

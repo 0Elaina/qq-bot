@@ -1,54 +1,82 @@
-import ast
-import operator
+from contextlib import redirect_stdout
+from datetime import datetime
+import io
+import math
+import random
 
 from langchain_core.tools import tool
 
-# 只有字典中的 AST 运算节点能执行，函数调用等其他节点一律拒绝
-_OPERATORS = {
-    ast.Add: operator.add,
-    ast.Sub: operator.sub,
-    ast.Mult: operator.mul,
-    ast.Div: operator.truediv,
+# 受限安全环境：不注入 __import__，天然阻断未授权模块动态加载
+_SAFE_BUILTINS = {
+    "print": print,
+    "range": range,
+    "len": len,
+    "sum": sum,
+    "min": min,
+    "max": max,
+    "abs": abs,
+    "round": round,
+    "int": int,
+    "float": float,
+    "str": str,
+    "bool": bool,
+    "list": list,
+    "dict": dict,
+    "set": set,
+    "tuple": tuple,
+    "sorted": sorted,
+    "enumerate": enumerate,
+    "zip": zip,
 }
 
 
-def evaluate_expression(expression: str) -> int | float:
-    """安全计算由数字、括号和四则运算符组成的表达式"""
-    try:
-        root = ast.parse(expression, mode="eval").body
-    except SyntaxError as error:
-        raise ValueError("表达式语法错误") from error
-    return _evaluate(root)
-
-
-def _evaluate(node: ast.expr) -> int | float:
-    """递归计算一个 AST 节点；只接受预先允许的节点类型"""
-
-    # 递归终点：节点本身就是数字，例如表达式里的 7 或 3.5
-    if isinstance(node, ast.Constant) and type(node.value) in (int, float):
-        return node.value
-
-    # 递归步骤：二元运算节点包含 left、op、right，例如 7 + 5
-    if isinstance(node, ast.BinOp) and type(node.op) in _OPERATORS:
-        left_value = _evaluate(node.left)
-        right_value = _evaluate(node.right)
-
-        # 两侧都先被算成数字后，才执行已经列入白名单的运算符
-        operation = _OPERATORS[type(node.op)]
-        return operation(left_value, right_value)
-    # 未列入白名单的节点（函数、变量、幂运算等）不能执行
-    raise ValueError("只允许数字、括号和 + - * /")
+def _get_safe_globals() -> dict:
+    """构建隔离的执行命名空间，安全注入白名单模块与内置函数"""
+    return {
+        "__builtins__": _SAFE_BUILTINS,
+        "math": math,
+        "random": random,
+        "datetime": datetime,
+    }
 
 
 @tool
-def calculate(expression: str) -> str:
-    """计算安全的四则运算表达式，例如 '(7 + 5) * 3'"""
-    try:
-        result = evaluate_expression(expression)
-    except ZeroDivisionError:
-        # ToolNode 需要获得正常结果，不能让一个除零错误中断整个 Agent
-        return "计算失败: 除数不能为 0"
-    except ValueError as error:
-        return f"计算失败: {error}"
+def execute_python(code: str) -> str:
+    """在安全的 Python 沙箱中执行代码或数学表达式，返回运算或打印结果。
 
-    return f"计算结果: {result}"
+    使用指南：
+    1. 大模型可通过编写标准 Python 代码完成任意高精度计算、数学公式、几何/复利算法、概率统计或复杂逻辑；
+    2. 支持单行表达式直接求值（如 '2**10'、'math.sqrt(144)'）；
+    3. 多行脚本请使用 print(...) 打印最终输出结果；
+    4. 沙箱内预置了 math、random、datetime 模块及常用内置函数。
+    """
+    cleaned_code = code.strip()
+    if not cleaned_code:
+        return "错误: 代码内容为空"
+
+    safe_globals = _get_safe_globals()
+
+    # 模式 1：优先尝试作为单行表达式直接求值（针对 '2**10', '15.5 * 3' 等无 print 场景）
+    try:
+        eval_result = eval(cleaned_code, safe_globals)
+        if eval_result is not None:
+            return f"计算结果: {eval_result}"
+    except SyntaxError:
+        # 存在多行语句、循环或赋值时，转入模式 2 执行
+        pass
+    except Exception as error:
+        return f"计算失败: {type(error).__name__}: {error}"
+
+    # 模式 2：执行脚本代码块并捕获 stdout 标准输出
+    buffer = io.StringIO()
+    try:
+        with redirect_stdout(buffer):
+            exec(cleaned_code, safe_globals)
+    except Exception as error:
+        return f"代码执行出错: {type(error).__name__}: {error}"
+
+    output = buffer.getvalue().strip()
+    if not output:
+        return "代码执行完成（无输出，建议使用 print(...) 输出结果）。"
+    return output
+
