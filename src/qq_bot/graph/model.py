@@ -12,6 +12,7 @@ from qq_bot.tools.anime import recommend_anime
 from qq_bot.tools.calculator import execute_python
 from qq_bot.tools.memory import forget_user_memory, record_user_memory
 from qq_bot.tools.time import get_current_time
+from qq_bot.tools.voice import send_voice_message
 
 
 def get_model_with_tools():
@@ -31,6 +32,7 @@ def get_model_with_tools():
             get_current_time,
             record_user_memory,
             forget_user_memory,
+            send_voice_message
         ]
     )
 

@@ -21,6 +21,10 @@ class AppConfig:
     server_host: str = os.getenv("SERVER_HOST", "127.0.0.1")
     server_port: int = int(os.getenv("SERVER_PORT", "8080"))
     
+    # Fish Audio 二次元语音合成配置
+    fish_audio_api_key: str = os.getenv("FISH_AUDIO_API_KEY", "")
+    fish_audio_voice_id: str = os.getenv("FISH_AUDIO_VOICE_ID", "7f92f8afb8ec43bf81429cc1c9199cb1")
+    
 
 
 # 导出单例配置对象，全项目统一引用

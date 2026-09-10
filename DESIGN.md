@@ -68,10 +68,11 @@ flowchart LR
 | `get_current_time` | `qq_bot.tools.time.get_current_time` | 获取现实世界的当前系统日期与时间，为大模型消除时空幻觉。 | 本地系统真实时钟 |
 | `record_user_memory` | `qq_bot.tools.memory.record_user_memory` | 大模型自主识别主人偏好与习惯，原子化记录到数据库（通过 `RunnableConfig` 隐式传递 `user_id`）。 | 业务数据库 `data/bot.db` |
 | `forget_user_memory` | `qq_bot.tools.memory.forget_user_memory` | 根据记忆 ID 定向删除/废弃过期或发生变更的历史记忆。 | 业务数据库 `data/bot.db` |
+| `send_voice_message` | `qq_bot.tools.voice.send_voice_message` | 纯内存 Base64 流转 + OneBot 11 CQ:record 异步投递日漫原声语音条（Fish Audio 云端合成）。 | Fish Audio API + NapCat HTTP 网关 |
 
 ## 提示词与人设架构
 
 | 模块 | 载体路径 | 职责与机制 |
 |------|----------|------------|
-| 人设定义 | `prompts/persona.md` | 独立 Markdown 文件，定义傲娇猫娘“白羽铃（铃酱）”身份、口癖（“喵”/颜文字）与泛化工具调用契约（嘴嫌体正直）。 |
+| 人设定义 | `prompts/persona.md` | 独立 Markdown 文件，定义害羞内向胆小萌猫“白羽铃（铃酱）”身份、口癖（“...喵”/颜文字）与纯日文语音 + 1:1 中文文本协同契约。 |
 | 动态注入 | `src/qq_bot/graph/model.py` (`model_node`) | 内存中临时组装 `[SystemMessage, *state["messages"]]` 发送给模型，不污染 SQLite 会话持久化历史。带 `@lru_cache` 本地缓存。 |

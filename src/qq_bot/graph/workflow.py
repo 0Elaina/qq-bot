@@ -11,6 +11,7 @@ from langgraph.checkpoint.base import BaseCheckpointSaver
 
 from qq_bot.tools.memory import forget_user_memory, record_user_memory
 from qq_bot.tools.time import get_current_time
+from qq_bot.tools.voice import send_voice_message
 
 
 def build_graph(checkpointer: BaseCheckpointSaver):
@@ -31,6 +32,7 @@ def build_graph(checkpointer: BaseCheckpointSaver):
                 get_current_time,
                 record_user_memory,
                 forget_user_memory,
+                send_voice_message
             ]
         ),
     )

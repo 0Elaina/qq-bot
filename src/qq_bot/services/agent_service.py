@@ -22,6 +22,8 @@ async def reply_to_message(
             "configurable": {
                 "thread_id": build_thread_id(message),
                 "user_id": message.user_id,
+                "chat_type": message.chat_type,
+                "group_id": message.group_id
             }
         },
     )
