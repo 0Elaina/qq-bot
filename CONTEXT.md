@@ -42,8 +42,8 @@ NapCat 反向 WebSocket 连接地址：`ws://127.0.0.1:8080/onebot/v11/ws`。
 - [已完成] 傲娇猫娘个性化人设定制：独立提示词管理（`prompts/persona.md`）与 `model_node` 动态无状态注入，真机联调验收通过。
 - [已完成] 核心工具库全量完成 LLM-Native 现代化升级：集成 Python Code Interpreter 代码解释器、Bangumi 统一番剧检索与现实时钟工具，全链路真机联调验收通过。
 - [已完成] 长效记忆与主人画像系统（Long-Term Memory）：实现 `MemoryRepository` 异步持久化层（`data/bot.db`），打通 `record_user_memory` 与 `forget_user_memory` 双 LLM-Native 工具，实现零状态污染的动态 SystemMessage 注入、跨群聊/私聊用户偏好打通与跨用户隐私隔离，离线仿真全场景验收通过。
-- [已完成] 害羞胆小软萌小猫娘人设升级与多模态二次元语音系统：重塑 `prompts/persona.md`，实现基于 Fish Audio 的纯内存 Base64 异步音频直发工具 `send_voice_message`，完成“纯日语原声语音 + 1:1 语义同步中文文本”的双语协同模式。
-- [当前阶段] 进行 NapCat 端到端真机联调与多场景互动验证。
+- [已完成] 害羞胆小软萌小猫娘人设升级与多模态二次元语音系统：重塑 `prompts/persona.md`，实现基于 Fish Audio 的纯内存 Base64 异步音频直发工具 `send_voice_message`，完成“纯日语原声语音 + 1:1 语义同步中文文本”的双语协同模式，真机端到端全链路联调验收通过。
+- [下一步] 开启下一个实用或有趣的新功能维度探讨与规划（如主动型伴侣/定时闹钟与关怀推送、网络实时雷达与天气检索、好感度与养成系统等）。
 
 
 
