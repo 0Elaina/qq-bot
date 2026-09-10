@@ -56,6 +56,7 @@ flowchart LR
 | 数据对象 | 字段 / 归属 | 职责 |
 |----------|-------------|------|
 | `notes` | `id`、`title`、`content`、`created_at` | 本地笔记查询 Tool 的只读数据源；查询最多返回少量匹配项。 |
+| `user_memories` | `id`、`user_id`、`category`、`content`、`created_at` (库: `data/bot.db`) | 用户长效画像与事实记忆表；支持多维度原子事实持久化与 Top-K 动态上下文注入。 |
 | LangGraph checkpointer | 由 `AsyncSqliteSaver` 管理的 SQLite 内部表 | 按 `thread_id` 保存图状态和短期消息；业务代码不直接依赖其表结构。 |
 
 ## 工具能力归档
@@ -63,9 +64,10 @@ flowchart LR
 | 工具名称 | 对应函数 / 模块 | 职责与机制 | 数据源与链接 |
 |---|---|---|---|
 | `execute_python` | `qq_bot.tools.calculator.execute_python` | 受限安全沙箱 Python 代码解释器，大模型写代码，工具双模执行（表达式直出与标准输出捕获）。 | 本地安全沙箱环境 |
-
 | `recommend_anime` | `qq_bot.tools.anime.recommend_anime` | 多维偏好番剧推荐、大模型自主推选与双链接卡片生成。 | Bangumi API v0 评分条目 + B 站直达搜索页链接 |
 | `get_current_time` | `qq_bot.tools.time.get_current_time` | 获取现实世界的当前系统日期与时间，为大模型消除时空幻觉。 | 本地系统真实时钟 |
+| `record_user_memory` | `qq_bot.tools.memory.record_user_memory` | 大模型自主识别主人偏好与习惯，原子化记录到数据库（通过 `RunnableConfig` 隐式传递 `user_id`）。 | 业务数据库 `data/bot.db` |
+| `forget_user_memory` | `qq_bot.tools.memory.forget_user_memory` | 根据记忆 ID 定向删除/废弃过期或发生变更的历史记忆。 | 业务数据库 `data/bot.db` |
 
 ## 提示词与人设架构
 

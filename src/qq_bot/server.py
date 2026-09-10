@@ -13,6 +13,7 @@ from qq_bot.config import config
 from qq_bot.domain.message import IncomingMessage
 from qq_bot.graph.checkpoint import open_checkpointer
 from qq_bot.graph.workflow import build_graph
+from qq_bot.repositories.memory_repo import memory_repo
 from qq_bot.services.agent_service import reply_to_message
 
 
@@ -24,6 +25,7 @@ async def lifespan(app: FastAPI):
         app: FastAPI 应用实例，用于将全局持久化对象挂载至 app.state
     """
     # 启动阶段：建立 SQLite 异步检查点连接与持久化 HTTP 客户端
+    await memory_repo.init_db()
     async with open_checkpointer() as checkpointer:
         async with AsyncClient(
             base_url=config.napcat_http_url, timeout=30.0

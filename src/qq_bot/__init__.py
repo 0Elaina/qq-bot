@@ -3,12 +3,15 @@ import asyncio
 from qq_bot.domain.message import IncomingMessage
 from qq_bot.graph.checkpoint import open_checkpointer
 from qq_bot.graph.workflow import build_graph
+from qq_bot.repositories.memory_repo import memory_repo
 from qq_bot.services.agent_service import reply_to_message
 
 
 async def run_simulation() -> None:
     """运行真实大模型测试：覆盖闲聊、群聊过滤、Tool Calling 与跨轮记忆隔离"""
     print("=== 开始运行 QQ Bot 真实大模型验收测试 ===\n")
+    
+    await memory_repo.init_db()
 
     # async with 确保 SQLite 异步连接在测试开始前完成 setup，在测试结束时无论成功失败均正确关闭
     async with open_checkpointer() as checkpointer:
@@ -32,7 +35,7 @@ async def run_simulation() -> None:
                 group_id=2001,
                 is_mentioned=False,
             ),
-            # 场景 3：群聊 @ 触发自然语言应用题计算（Tool Calling 完整闭环）
+            # 场景 3：群聊 @ 触发 Python 工具计算（Tool Calling 完整闭环）
             IncomingMessage(
                 message_id=3,
                 user_id=1001,
@@ -41,23 +44,35 @@ async def run_simulation() -> None:
                 group_id=2001,
                 is_mentioned=True,
             ),
-            # 场景 4：多轮记忆写入
+            # 场景 4 [长效记忆]：自主识别并沉淀主人偏好（模型自主触发 record_user_memory）
             IncomingMessage(
                 message_id=4,
                 user_id=1001,
-                text="请记住我的代号叫探戈狼",
+                text="铃酱，我平时绝不吃香菜，但我最喜欢吃海鲜拉面喵！",
                 chat_type="private",
             ),
-            # 场景 5：多轮记忆读取（验证同用户上下文延续）
+            # 场景 5 [长效记忆]：跨场景打通唤起（群聊隔离会话中无私聊消息历史，依然准确感知主人偏好）
             IncomingMessage(
                 message_id=5,
                 user_id=1001,
-                text="还记得我的代号叫什么吗？",
+                text="今天晚餐推荐我吃点什么好呢？",
+                chat_type="group",
+                group_id=2001,
+                is_mentioned=True,
+            ),
+            # 场景 6 [长效记忆]：更正与遗忘（模型识别偏好变更，定向调用 forget_user_memory）
+            IncomingMessage(
+                message_id=6,
+                user_id=1001,
+                text="铃酱，把我不吃香菜这事忘掉吧，我现在其实挺喜欢香菜了",
                 chat_type="private",
             ),
-            # 场景 6：不同用户隐私隔离（验证 1002 读不到 1001 的记忆）
+            # 场景 7 [长效记忆]：跨用户隐私隔离（用户 1002 读不到用户 1001 的记忆）
             IncomingMessage(
-                message_id=6, user_id=1002, text="我的代号叫什么？", chat_type="private"
+                message_id=7,
+                user_id=1002,
+                text="你知道我喜欢吃什么吗？",
+                chat_type="private",
             ),
         ]
 

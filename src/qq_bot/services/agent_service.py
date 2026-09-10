@@ -18,7 +18,12 @@ async def reply_to_message(
 
     result = await graph.ainvoke(
         {"messages": [HumanMessage(content=message.text)]},
-        {"configurable": {"thread_id": build_thread_id(message)}},
+        {
+            "configurable": {
+                "thread_id": build_thread_id(message),
+                "user_id": message.user_id,
+            }
+        },
     )
 
     return str(result["messages"][-1].content)

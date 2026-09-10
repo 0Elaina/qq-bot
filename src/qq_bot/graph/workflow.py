@@ -9,6 +9,7 @@ from qq_bot.tools.calculator import execute_python
 
 from langgraph.checkpoint.base import BaseCheckpointSaver
 
+from qq_bot.tools.memory import forget_user_memory, record_user_memory
 from qq_bot.tools.time import get_current_time
 
 
@@ -22,9 +23,17 @@ def build_graph(checkpointer: BaseCheckpointSaver):
 
     # ToolNode 负责按 tool_calls 调用白名单工具，业务代码不手动分派函数
     workflow.add_node(
-        "tools", ToolNode([execute_python, recommend_anime, get_current_time])
+        "tools",
+        ToolNode(
+            [
+                execute_python,
+                recommend_anime,
+                get_current_time,
+                record_user_memory,
+                forget_user_memory,
+            ]
+        ),
     )
-
 
     # 每次图调用必须先由模型决定是直接回复，还是请求调用工具
     workflow.add_edge(START, "model")
